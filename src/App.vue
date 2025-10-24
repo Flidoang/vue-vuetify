@@ -5,39 +5,54 @@
     <SideBar v-model="drawer" />
 
     <!-- Navbar -->
-    <v-app-bar color="indigo-lighten-3">
-      <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Admin News</v-toolbar-title>
-
-      <template v-if="$vuetify.display.mdAndUp">
-        <v-btn icon="mdi-magnify" variant="text"></v-btn>
-
-        <v-btn icon="mdi-filter" variant="text"></v-btn>
-      </template>
-
-      <v-btn color="red-darken-3" icon="mdi mdi-logout" variant="text"></v-btn>
-    </v-app-bar>
-
-
+    <NavBar @toggle-drawer="toggleDrawer" />
 
     <!-- Main -->
     <v-main style="height: 500px">
       <v-card-text>
         <h1>Ini main Content</h1>
+        <v-btn @click="showMotivation = !showMotivation" type="button">Show Motivation</v-btn>
+        <v-btn @click="showError = !showError" type="button">Show Error</v-btn>
+        <AlertMessage v-model="showMotivation" typevalue="success">
+          <template #title>
+            <span class="text-h5">List Motivation</span>
+          </template>
+          <template #default>
+            <ul>
+              <li>Rafli Hendarsyah</li>
+              <li>Puja Rochmansyah</li>
+              <li>Jhon Doe</li>
+            </ul>
+          </template>
+        </AlertMessage>
+        <AlertMessage v-model="showError" typevalue="error">
+          <template #title>
+            <span class="text-h5">Error</span>
+          </template>
+          <template #default>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae nemo sint maiores vero blanditiis,
+              officia numquam rerum sit quisquam laborum.</p>
+          </template>
+        </AlertMessage>
       </v-card-text>
     </v-main>
   </v-layout>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, provide } from 'vue'
 import SideBar from './components/SideBar.vue'
+import NavBar from './components/NavBar.vue'
+import AlertMessage from './components/AlertMessage.vue'
 
 const drawer = ref(false)
-const group = ref(null)
+const showError = ref(false)
+const showMotivation = ref(false)
 
-watch(group, () => {
-  drawer.value = false
-})
+provide('username', 'Flixiver')
+
+const toggleDrawer = () => {
+  drawer.value = !drawer.value
+}
+
 </script>
