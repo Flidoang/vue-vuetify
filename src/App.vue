@@ -10,12 +10,16 @@
     <!-- Main -->
     <v-main style="height: 500px">
       <v-card-text>
-        <h1>Ini main Content</h1>
+
+        <RouterView />
+
+        <!-- sementara -->
+        <!-- <h1>Ini main Content</h1>
         <v-btn @click="showMotivation = !showMotivation" type="button">Show Motivation</v-btn>
         <v-btn @click="showError = !showError" type="button">Show Error</v-btn>
         <AlertMessage v-model="showMotivation" typevalue="success">
           <template #title>
-            <span class="text-h5">List Motivation</span>
+            <span class="text-h5">List Mahasiswa</span>
           </template>
           <template #default>
             <ul>
@@ -33,7 +37,7 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae nemo sint maiores vero blanditiis,
               officia numquam rerum sit quisquam laborum.</p>
           </template>
-        </AlertMessage>
+        </AlertMessage> -->
       </v-card-text>
     </v-main>
   </v-layout>
@@ -41,13 +45,14 @@
 
 <script setup>
 import { ref, provide } from 'vue'
+import { RouterView } from 'vue-router'
 import SideBar from './components/SideBar.vue'
 import NavBar from './components/NavBar.vue'
-import AlertMessage from './components/AlertMessage.vue'
+// import AlertMessage from './components/AlertMessage.vue'
 
-const drawer = ref(false)
-const showError = ref(false)
-const showMotivation = ref(false)
+const drawer = ref(true)
+// const showError = ref(false)
+// const showMotivation = ref(false)
 
 provide('username', 'Flixiver')
 
