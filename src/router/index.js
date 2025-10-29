@@ -18,7 +18,7 @@ import CategoryPublicView from '@/views/public/CategoryPublicView.vue'
 // Error View
 import NotFoundView from '@/views/error/NotFoundView.vue'
 
-const login = false // Simulated authentication status
+const login = true // Simulated authentication status
 
 const requireAuth = (to, from, next) => {
   if (!login) {
