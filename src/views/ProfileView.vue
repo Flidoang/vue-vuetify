@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Halaman Profile</h1>
+        <h3>Jumlah user {{ users.totalUsers }}</h3>
 
         <IconLink color="blue" icon="mdi-linkedin" link="https://www.linkedin.com/in/raflihendarsyah/" />
         <IconLink color="grey" icon="mdi-github" link="https://github.com/Flidoang" />

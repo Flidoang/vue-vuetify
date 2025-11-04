@@ -1,6 +1,6 @@
 import { name } from '@vue/eslint-config-prettier/skip-formatting'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
 export const useUserStore = defineStore('User', () => {
   const userData = ref([
@@ -13,5 +13,28 @@ export const useUserStore = defineStore('User', () => {
       email: 'puja@gmail.com',
     },
   ])
-  return { userData }
+
+  const userInput = reactive({
+    name: '',
+    email: '',
+  })
+
+  const clearData = () => {
+    userInput.name = ''
+    userInput.email = ''
+  }
+
+  const addUser = () => {
+    userData.value.push({
+      name: userInput.name,
+      email: userInput.email,
+    })
+    clearData()
+  }
+
+  const totalUsers = computed(() => {
+    return userData.value.length
+  })
+
+  return { userData, userInput, addUser, totalUsers }
 })
