@@ -2,10 +2,14 @@
   <main>
     <h1>Halaman Category</h1>
     <div class="d-flex justify-end my-6">
-      <v-btn @click="dialog = true" icon="mdi-plus" size="large" color="primary" />
+      <v-btn @click="tambahData()" icon="mdi-plus" size="large" color="primary" />
     </div>
     <DialogComponent v-model="dialog">
-      <template #title> Add Kategori </template>
+      <template #title>
+        <div>
+          {{ category.isUpdate ? "Update Data" : "Tambah Data" }}
+        </div>
+      </template>
       <template #content>
         <v-form @submit.prevent="onSubmitData" v-model="form">
           <v-text-field
@@ -35,9 +39,34 @@
             large
             type="submit"
             variant="elevated"
-            >Add</v-btn
+            >{{ category.isUpdate ? "Update" : "Tambah" }}</v-btn
           >
         </v-form>
+      </template>
+    </DialogComponent>
+
+    <!-- show detial data -->
+    <DialogComponent v-model="dialogDetail">
+      <template #title> {{ category.name }} </template>
+      <template #content>
+        <p>Description: {{ category.description }}</p>
+      </template>
+    </DialogComponent>
+
+    <DialogComponent v-model="dialogDelete">
+      <template #title>Delete Category</template>
+      <template #content>
+        <div class="text-h6 text-error pa-3">
+          Apakah anda yakin ingin menghapus {{ category.name }}
+        </div>
+        <v-row>
+          <v-col>
+            <v-btn color="primary" block @click="destroyData(category.id)">Yakin??</v-btn>
+          </v-col>
+          <v-col>
+            <v-btn color="error" block @click="dialogDelete = false">Batal</v-btn>
+          </v-col>
+        </v-row>
       </template>
     </DialogComponent>
 
@@ -47,6 +76,7 @@
         <tr>
           <th class="text-left">No</th>
           <th class="text-left">Name</th>
+          <th class="text-left">Description</th>
           <th class="text-center">Action</th>
         </tr>
       </thead>
@@ -54,10 +84,27 @@
         <tr v-for="(item, index) in categories" :key="item.id">
           <td>{{ index + 1 }}</td>
           <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
           <td class="text-center">
-            <v-btn size="x-small" color="info" icon="mdi-information" />
-            <v-btn size="x-small" color="primary" icon="mdi-pencil" class="mx-3" />
-            <v-btn size="x-small" color="error" icon="mdi-trash-can" />
+            <v-btn
+              size="x-small"
+              color="info"
+              icon="mdi-information"
+              @click="getData(item)"
+            />
+            <v-btn
+              size="x-small"
+              color="primary"
+              icon="mdi-pencil"
+              class="mx-3"
+              @click="editData(item)"
+            />
+            <v-btn
+              size="x-small"
+              color="error"
+              icon="mdi-trash-can"
+              @click="deleteData(item)"
+            />
           </td>
         </tr>
       </tbody>
@@ -72,48 +119,32 @@
 
 <script setup>
 import DialogComponent from "@/components/admin/DialogComponent.vue";
-import { ref, reactive, onMounted, onUnmounted, onUpdated } from "vue";
+import { onMounted } from "vue";
+import { useCategoryStore } from "@/stores/categoryStore";
+import { storeToRefs } from "pinia";
 
 // lifecycle
+const categoryStorage = useCategoryStore();
+
+// state
+const { category, form, dialog, categories, dialogDetail, dialogDelete } = storeToRefs(
+  categoryStorage
+);
+
+// action
+const {
+  onSubmitData,
+  readCategory,
+  getData,
+  tambahData,
+  editData,
+  deleteData,
+  destroyData,
+} = categoryStorage;
+
 onMounted(() => {
-  console.log("fungsi mounted jalan");
+  readCategory();
 });
-onUnmounted(() => {
-  console.log("fungsi unmounted jalan");
-  confirm("Apakah anda ingin keluar?");
-});
-onUpdated(() => {
-  console.log("fungsi updated jalan");
-});
-
-const dialog = ref(false);
-const form = ref(false);
-
-const category = reactive({
-  name: "",
-  description: "",
-});
-
-const onSubmitData = () => {
-  if (!category.name.trim() || !category.description.trim()) {
-    alert("Form belum diisi");
-    return;
-  }
-
-  alert(
-    "Form berhasil disubmit!" +
-      "\n" +
-      "Data category: " +
-      category.name +
-      " " +
-      category.description
-  );
-
-  // Reset form dan tutup dialog
-  category.name = "";
-  category.description = "";
-  dialog.value = false;
-};
 
 // validation
 const nameRules = [
@@ -129,19 +160,4 @@ const descriptionRules = [
     return "description is required";
   },
 ];
-
-const categories = ref([
-  {
-    id: 1,
-    name: "Teknik Informatika",
-  },
-  {
-    id: 2,
-    name: "Sistem Informasi",
-  },
-  {
-    id: 3,
-    name: "Desain Komunikasi Visual",
-  },
-]);
 </script>

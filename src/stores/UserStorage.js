@@ -1,4 +1,3 @@
-import { name } from '@vue/eslint-config-prettier/skip-formatting'
 import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
 
