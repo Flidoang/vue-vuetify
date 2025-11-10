@@ -1,5 +1,9 @@
 <template>
-    <h1>
-        Halaman Register Publik
-    </h1>
+  <section>
+    <FormAuthComponent />
+  </section>
 </template>
+
+<script setup>
+import FormAuthComponent from "@/components/public/FormAuthComponent.vue";
+</script>
