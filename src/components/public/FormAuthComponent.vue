@@ -5,45 +5,60 @@
     </div>
 
     <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
-      <div v-if="!isLogin">
-        <div class="text-subtitle-1 text-medium-emphasis">Name</div>
+      <v-form v-model="formInput" @submit.prevent="authUser">
+        <div v-if="!isLogin">
+          <div class="text-subtitle-1 text-medium-emphasis">Name</div>
+
+          <v-text-field
+            density="compact"
+            placeholder="Username"
+            prepend-inner-icon="mdi-account"
+            variant="outlined"
+            :rules="nameRules"
+            v-model="user.name"
+          ></v-text-field>
+        </div>
+
+        <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
         <v-text-field
           density="compact"
-          placeholder="Username"
-          prepend-inner-icon="mdi-account"
+          placeholder="Email address"
+          prepend-inner-icon="mdi-email-outline"
           variant="outlined"
+          :rules="emailRules"
+          v-model="user.email"
         ></v-text-field>
-      </div>
 
-      <div class="text-subtitle-1 text-medium-emphasis">Email</div>
+        <div
+          class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+        >
+          Password
+        </div>
 
-      <v-text-field
-        density="compact"
-        placeholder="Email address"
-        prepend-inner-icon="mdi-email-outline"
-        variant="outlined"
-      ></v-text-field>
+        <v-text-field
+          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+          :type="visible ? 'text' : 'password'"
+          density="compact"
+          placeholder="Enter your password"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          @click:append-inner="visible = !visible"
+          :rules="[passwordRules.required, passwordRules.min]"
+          v-model="user.password"
+        ></v-text-field>
 
-      <div
-        class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
-      >
-        Password
-      </div>
-
-      <v-text-field
-        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="visible ? 'text' : 'password'"
-        density="compact"
-        placeholder="Enter your password"
-        prepend-inner-icon="mdi-lock-outline"
-        variant="outlined"
-        @click:append-inner="visible = !visible"
-      ></v-text-field>
-
-      <v-btn class="mb-8" color="blue" size="large" variant="tonal" block>{{
-        isLogin ? "Login" : "Register"
-      }}</v-btn>
+        <v-btn
+          type="submit"
+          class="mb-8"
+          color="blue"
+          size="large"
+          variant="tonal"
+          block
+          :disabled="!formInput"
+          >{{ isLogin ? "Login" : "Register" }}</v-btn
+        >
+      </v-form>
 
       <v-card-text class="text-center" v-if="isLogin">
         <router-link
@@ -69,6 +84,35 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+
+// store
+const authStore = useAuthStore();
+
+// state
+const { formInput, user } = storeToRefs(authStore);
+
+// action
+const { authUser } = authStore;
+
+// validation
+const nameRules = [
+  (value) => {
+    if (value) return true;
+    return "Name Harus Diisi";
+  },
+];
+
+const emailRules = [
+  (v) =>
+    !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail must be valid",
+];
+
+const passwordRules = {
+  required: (value) => !!value || "Password harus diisi.",
+  min: (v) => v.length >= 8 || "Min 8 characters",
+};
 
 const visible = ref(false);
 
